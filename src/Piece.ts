@@ -76,4 +76,17 @@ export class Lion extends DefaultPiece {
         || (pos.col === this.currentPosition.col + 1 && pos.row === this.currentPosition.row)
         || (pos.col === this.currentPosition.col - 1 && pos.row === this.currentPosition.row);
     }
+
+    render(): string {
+      return `<img class="piece ${this.ownerType}" src="${griffImage}" width="90%" height="90%"/>`;
+    }
+}
+export class Chick extends DefaultPiece {
+  canMove(pos: Position) {
+    return this.currentPosition.row + ((this.ownerType == PlayerType.UPPER) ? +1 : -1) === pos.row;
+  }
+
+  render(): string {
+    return `<img class="piece ${this.ownerType}" src="${chickenImage}" width="90%" height="90%"/>`;
+  }
 }

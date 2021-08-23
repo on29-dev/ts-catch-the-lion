@@ -1,17 +1,45 @@
 import { Player, PlayerType } from './Player';
-import { Board, DeadZone } from "./Board"
+import { Board, Cell, DeadZone } from "./Board"
 
 export class Game {
-    readonly board = new Board()
-    readonly upperDeadZone = new DeadZone('upper');
-    readonly lowerDeadZone = new DeadZone('lower');
+  private selectedCell: Cell;
+  private turn = 0;
+  private currentPlayer: Player;
+  private gameInfoEl = document.querySelector('.alert');
+  private state: 'STARTED' | 'END' = 'STARTED';
 
-    readonly upperPlayer = new Player(PlayerType.UPPER);
-    readonly lowerPlayer = new Player(PlayerType.LOWER);
+  readonly upperPlayer = new Player(PlayerType.UPPER);
+  readonly lowerPlayer = new Player(PlayerType.LOWER);
+  
+  readonly board = new Board(this.upperPlayer, this.lowerPlayer);
+  readonly upperDeadZone = new DeadZone('upper');
+  readonly lowerDeadZone = new DeadZone('lower');
+
 
     constructor() {
       const boardContainer = document.querySelector('.board-container')
       boardContainer.firstChild.remove()
       boardContainer.appendChild(this.board._el);
+      
+      this.currentPlayer = this.upperPlayer;
+      this.board.render()
+      this.renderInfo()
+    }
+
+    renderInfo(extraMessage?: string) {
+      this.gameInfoEl.innerHTML = `#${this.turn}턴 ${this.currentPlayer.type} 차례 ${(extraMessage) ? '| '+ extraMessage : ''}`
+    }
+
+    changeTurn() {
+      this.selectedCell.deactive();
+      this.selectedCell = null;
+      if (this.state === 'END') {
+        this.renderInfo('END!');
+      } else {
+        this.turn += 1;
+        this.currentPlayer = (this.currentPlayer === this.lowerPlayer) ? this.upperPlayer : this.lowerPlayer
+        this.renderInfo();
+      }
+      this.board.render();
     }
 }
