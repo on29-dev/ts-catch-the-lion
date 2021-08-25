@@ -41,6 +41,7 @@ export class Cell {
 export class Board {
     cells: Cell[] = [];
     _el: HTMLElement = document.createElement('div');
+    map: WeakMap<HTMLElement, Cell> = new WeakMap();
 
     constructor(upperPlayer: Player, lowerPlayer: Player) {
         this._el.className = 'board';
@@ -48,6 +49,7 @@ export class Board {
             const rowEl = document.createElement('div');
             rowEl.className = 'row';
             this._el.appendChild(rowEl);
+
 
             for(let col=0; col < 3; col++){
                 const piece = upperPlayer.getPieces()
@@ -57,6 +59,7 @@ export class Board {
                     .find(({currentPosition})=>currentPosition.col === col && currentPosition.row === row) 
                 console.log(piece)
                 const cell = new Cell({row, col}, piece);
+                this.map.set(cell._el, cell);
                 this.cells.push(cell);
                 rowEl.appendChild(cell._el);  
             }
